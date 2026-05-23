@@ -1,0 +1,28 @@
+name: Test version-file input
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          args: check
+          src: ${{ github.workspace }}/actions/hardened/astral-sh--ruff-action/v3.5.0/tests/fixtures/sample.py
+          version-file: ${{ github.workspace }}/actions/hardened/astral-sh--ruff-action/v3.5.0/tests/fixtures/pyproject.toml
+      - name: Assert ruff-version output matches version from pyproject.toml
+        env:
+          RUFF_VERSION: ${{ steps.action.outputs.ruff-version }}
+        run: |
+          echo "ruff-version: $RUFF_VERSION"
+          if [ -z "$RUFF_VERSION" ]; then
+            echo "FAIL: ruff-version output is empty"
+            exit 1
+          fi
+          if [ "$RUFF_VERSION" != "0.9.0" ]; then
+            echo "FAIL: expected ruff version '0.9.0', got '$RUFF_VERSION'"
+            exit 1
+          fi
+          echo "PASS"

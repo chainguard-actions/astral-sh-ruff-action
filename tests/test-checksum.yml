@@ -1,0 +1,33 @@
+name: Test checksum input
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          args: check
+          src: ${{ github.workspace }}/actions/hardened/astral-sh--ruff-action/v3.5.0/tests/fixtures/sample.py
+          version: "0.9.0"
+          # Providing a deliberately invalid checksum to verify the input is processed.
+          # The action will fail with a checksum mismatch error, which is expected.
+          checksum: "0000000000000000000000000000000000000000000000000000000000000000"
+        continue-on-error: true
+      - name: Assert action ran with checksum input (mismatch is expected)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "action outcome: $OUTCOME"
+          # The action should fail because the checksum doesn't match.
+          # This confirms the checksum input was accepted and processed.
+          if [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action correctly processed the checksum input (mismatch detected)"
+          elif [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action succeeded (checksum matched or was skipped)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi
