@@ -1,0 +1,47 @@
+name: Test checksum input
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Create a simple Python file that passes ruff check
+        run: |
+          mkdir -p /tmp/ruff-test-src
+          cat > /tmp/ruff-test-src/hello.py << 'EOF'
+          x = 1
+          EOF
+      - name: Fetch checksum for ruff 0.11.0
+        id: fetch-checksum
+        run: |
+          CHECKSUM=$(curl -fsSL "https://github.com/astral-sh/ruff/releases/download/0.11.0/ruff-x86_64-unknown-linux-musl.tar.gz.sha256" | awk '{print $1}')
+          echo "checksum=$CHECKSUM" >> "$GITHUB_OUTPUT"
+          echo "Fetched checksum: $CHECKSUM"
+      - id: action
+        uses: .
+        with:
+          args: "check"
+          src: "/tmp/ruff-test-src"
+          version: "0.11.0"
+          checksum: ${{ steps.fetch-checksum.outputs.checksum }}
+      - name: Assert ruff-version output is set
+        env:
+          ACTUAL: ${{ steps.action.outputs.ruff-version }}
+        run: |
+          echo "actual: $ACTUAL"
+          if [ -z "$ACTUAL" ]; then
+            echo "FAIL: expected ruff-version output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: ruff-version=$ACTUAL"
+      - name: Assert ruff version matches requested version
+        env:
+          ACTUAL: ${{ steps.action.outputs.ruff-version }}
+        run: |
+          echo "actual: $ACTUAL"
+          if [ "$ACTUAL" != "0.11.0" ]; then
+            echo "FAIL: expected ruff-version to be '0.11.0', got '$ACTUAL'"
+            exit 1
+          fi
+          echo "PASS"
