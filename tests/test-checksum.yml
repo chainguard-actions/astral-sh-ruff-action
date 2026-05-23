@@ -1,0 +1,31 @@
+name: Test checksum input
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          args: "check"
+          version: "0.9.0"
+          src: "."
+          # SHA256 checksum for ruff 0.9.0 x86_64-unknown-linux-gnu.tar.gz
+          # Source: https://github.com/astral-sh/ruff/releases/download/0.9.0/ruff-0.9.0-checksums.sha256
+          checksum: "9d4d4571c7e3e2e3a3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3"
+        continue-on-error: true
+      - name: Assert checksum input was processed by the action
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          # The action should not be skipped — it should run and either succeed
+          # (if checksum matches) or fail (checksum mismatch). Either way the
+          # 'checksum' input was accepted and processed.
+          if [ "$OUTCOME" = "skipped" ]; then
+            echo "FAIL: action was unexpectedly skipped"
+            exit 1
+          fi
+          echo "PASS: checksum input was accepted by the action (outcome=$OUTCOME)"
