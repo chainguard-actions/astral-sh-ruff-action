@@ -1,0 +1,40 @@
+name: Test ruff with version-file input
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Create a simple Python file to lint
+        run: |
+          mkdir -p /tmp/ruff-test
+          cat > /tmp/ruff-test/hello.py << 'EOF'
+          x = 1
+          EOF
+      - id: action
+        uses: .
+        with:
+          args: check
+          src: /tmp/ruff-test
+          version-file: ${{ github.workspace }}/actions/hardened/astral-sh--ruff-action/v3.6.1/tests/fixtures/pyproject.toml
+      - name: Assert ruff-version output is set
+        env:
+          ACTUAL: ${{ steps.action.outputs.ruff-version }}
+        run: |
+          echo "actual ruff-version: $ACTUAL"
+          if [ -z "$ACTUAL" ]; then
+            echo "FAIL: expected ruff-version output to be non-empty"
+            exit 1
+          fi
+          echo "PASS"
+      - name: Assert ruff version matches pyproject.toml
+        env:
+          ACTUAL: ${{ steps.action.outputs.ruff-version }}
+        run: |
+          echo "actual ruff-version: $ACTUAL"
+          if [ "$ACTUAL" != "0.9.0" ]; then
+            echo "FAIL: expected ruff-version to be '0.9.0', got '$ACTUAL'"
+            exit 1
+          fi
+          echo "PASS"
