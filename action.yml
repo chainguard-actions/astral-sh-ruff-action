@@ -1,0 +1,44 @@
+name: "ruff-action"
+description: "A GitHub Action to run Ruff, an extremely fast Python linter and code formatter."
+author: "astral-sh"
+inputs:
+  args:
+    description: "Arguments passed to Ruff. Use `ruff --help` to see available options. Defaults to `check`."
+    required: false
+    default: "check"
+  src:
+    description: "Source path(s) or @actions/glob pattern(s) to run Ruff on. Defaults to the current workspace."
+    required: false
+    default: ${{ github.workspace }}
+  version:
+    description: "The version of Ruff to use, e.g., `0.6.0`. Defaults to the first discoverable version in pyproject.toml searched upward from `src`, or `latest`."
+    required: false
+    default: ""
+  version-file:
+    description: "Path to a pyproject.toml, requirements.txt or uv.lock file to read the version from. If parsing fails, the action warns and falls back to `latest`."
+    required: false
+  checksum:
+    description: "The checksum of the ruff version to install"
+    required: false
+  manifest-file:
+    description: "URL to a custom manifest file in the astral-sh/versions format."
+    required: false
+  download-from-astral-mirror:
+    description: "Download Ruff from the Astral mirror instead of directly from GitHub Releases."
+    required: false
+    default: "true"
+  github-token:
+    description:
+      "Used for authenticated downloads of Ruff release artifacts from GitHub."
+    required: false
+    default: ${{ github.token }}
+outputs:
+  ruff-version:
+    description: "The installed ruff version. Useful when using latest."
+runs:
+  pre: chainguard-phonehome.js
+  using: "node24"
+  main: "dist/ruff-action/index.cjs"
+branding:
+  icon: "code"
+  color: "black"

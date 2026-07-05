@@ -1,0 +1,39 @@
+name: Test ruff with custom manifest-file
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create a clean Python file
+        run: |
+          mkdir -p /tmp/ruff-manifest-test
+          cat > /tmp/ruff-manifest-test/sample.py << 'EOF'
+          x = 1
+          print(x)
+          EOF
+
+      # Pass the official astral-sh ruff versions manifest URL as the manifest-file.
+      # This exercises the manifest-file input code path using the same manifest
+      # the action would use by default, ensuring the download and version resolution
+      # still succeed.
+      - id: action
+        uses: .
+        with:
+          args: "check"
+          src: "/tmp/ruff-manifest-test"
+          version: "0.6.0"
+          manifest-file: "https://raw.githubusercontent.com/astral-sh/ruff/main/assets/versions.json"
+
+      - name: Assert ruff-version output is set
+        env:
+          ACTUAL: ${{ steps.action.outputs.ruff-version }}
+        run: |
+          echo "actual ruff-version: $ACTUAL"
+          if [ -z "$ACTUAL" ]; then
+            echo "FAIL: expected ruff-version output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: ruff-version=$ACTUAL"

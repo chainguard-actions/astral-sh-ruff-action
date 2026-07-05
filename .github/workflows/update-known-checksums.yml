@@ -1,0 +1,41 @@
+name: "Update known checksums"
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * *" # Run every day at 4am UTC
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Update known checksums
+        id: update-known-checksums
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node dist/update-known-checksums/index.cjs src/download/checksum/known-checksums.ts "$GITHUB_TOKEN"
+      - run: npm ci --ignore-scripts && npm run all
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          commit-message: "chore: update known checksums"
+          title:
+            "chore: update known checksums for ${{
+            steps.update-known-checksums.outputs.latest-version }}"
+          body:
+            "chore: update known checksums for ${{
+            steps.update-known-checksums.outputs.latest-version }}"
+          base: main
+          labels: "automated-pr,update-known-checksums"
+          branch: update-known-checksums-pr
+          delete-branch: true

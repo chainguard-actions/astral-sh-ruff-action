@@ -1,0 +1,46 @@
+name: Test ruff version from version-file
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create Python project with pyproject.toml specifying ruff version
+        run: |
+          mkdir -p /tmp/ruff-versionfile-test
+          cat > /tmp/ruff-versionfile-test/pyproject.toml << 'EOF'
+          [tool.ruff]
+          line-length = 88
+
+          [tool.ruff.lint]
+          select = ["E", "F"]
+
+          [dependency-groups]
+          dev = [
+            "ruff==0.7.0",
+          ]
+          EOF
+          cat > /tmp/ruff-versionfile-test/sample.py << 'EOF'
+          x = 1
+          print(x)
+          EOF
+
+      - id: action
+        uses: .
+        with:
+          args: "check"
+          src: "/tmp/ruff-versionfile-test"
+          version-file: "/tmp/ruff-versionfile-test/pyproject.toml"
+
+      - name: Assert ruff-version output is set
+        env:
+          ACTUAL: ${{ steps.action.outputs.ruff-version }}
+        run: |
+          echo "actual ruff-version: $ACTUAL"
+          if [ -z "$ACTUAL" ]; then
+            echo "FAIL: expected ruff-version output to be non-empty"
+            exit 1
+          fi
+          echo "PASS: ruff-version=$ACTUAL"

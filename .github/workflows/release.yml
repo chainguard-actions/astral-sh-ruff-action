@@ -1,0 +1,113 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g., 8.1.0)"
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  validate-release:
+    name: Validate release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Validate version and draft release
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ inputs.version }}
+          TAG: v${{ inputs.version }}
+        run: |
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
+            echo "::error::Version must match MAJOR.MINOR.PATCH (e.g., 8.1.0)"
+            exit 1
+          fi
+
+          RELEASE_JSON=$(gh release view "$TAG" --json isDraft,targetCommitish 2>&1) || {
+            echo "::error::No release found for $TAG"
+            exit 1
+          }
+
+          IS_DRAFT=$(echo "$RELEASE_JSON" | jq -r '.isDraft')
+          TARGET=$(echo "$RELEASE_JSON" | jq -r '.targetCommitish')
+
+          if [[ "$IS_DRAFT" != "true" ]]; then
+            echo "::error::Release $TAG already exists and is not a draft"
+            exit 1
+          fi
+
+          if [[ "$TARGET" != "$GITHUB_SHA" ]]; then
+            echo "::error::Draft release target ($TARGET) does not match current commit ($GITHUB_SHA)"
+            exit 1
+          fi
+
+  release-gate:
+    # N.B. This name should not change, it is used for downstream checks.
+    name: release-gate
+    needs:
+      - validate-release
+    runs-on: ubuntu-latest
+    environment:
+      name: release-gate
+    steps:
+      - run: echo "Release approved"
+
+  create-deployment:
+    name: create-deployment
+    needs:
+      - validate-release
+      - release-gate
+    runs-on: ubuntu-latest
+    environment:
+      name: release
+    steps:
+      - run: echo "Release deployment created"
+
+  release:
+    name: Release
+    needs:
+      - validate-release
+      - release-gate
+      - create-deployment
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Publish release
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ inputs.version }}
+          TAG: v${{ inputs.version }}
+        run: |
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
+            echo "::error::Version must match MAJOR.MINOR.PATCH (e.g., 8.1.0)"
+            exit 1
+          fi
+
+          RELEASE_JSON=$(gh release view "$TAG" --json isDraft,targetCommitish 2>&1) || {
+            echo "::error::No release found for $TAG"
+            exit 1
+          }
+
+          IS_DRAFT=$(echo "$RELEASE_JSON" | jq -r '.isDraft')
+          TARGET=$(echo "$RELEASE_JSON" | jq -r '.targetCommitish')
+
+          if [[ "$IS_DRAFT" != "true" ]]; then
+            echo "::error::Release $TAG already exists and is not a draft"
+            exit 1
+          fi
+
+          if [[ "$TARGET" != "$GITHUB_SHA" ]]; then
+            echo "::error::Draft release target ($TARGET) does not match current commit ($GITHUB_SHA)"
+            exit 1
+          fi
+
+          echo "Publishing draft release $TAG"
+          gh release edit "$TAG" --draft=false
