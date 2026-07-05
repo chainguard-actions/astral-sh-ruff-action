@@ -13,6 +13,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 | v3.6.0 | [`v3.6.0`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.6.0) | — |
 | v3.6.1 | [`v3.6.1`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.6.1) | — |
 | v4.0.0 | [`v4.0.0`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v4.0.0) | — |
+| v4.1.0 | [`v4.1.0`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v4.1.0) | [`278981a`](https://github.com/astral-sh/ruff-action/commit/278981a28ce3188b1e39527901f38254bf3aac89) |
 
 ## Privacy
 
