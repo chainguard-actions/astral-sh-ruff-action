@@ -8,7 +8,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 
 | Version | Tag | Upstream commit |
 |---------|-----|-----------------|
-| v3.5.0 | [`v3.5.0`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.5.0) | — |
+| v3.5.0 | [`v3.5.0`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.5.0) | [`0c50076`](https://github.com/astral-sh/ruff-action/commit/0c50076f12c38c3d0115b7b519b54a91cb9cf0ad) |
 | v3.5.1 | [`v3.5.1`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.5.1) | — |
 | v3.6.0 | [`v3.6.0`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.6.0) | — |
 | v3.6.1 | [`v3.6.1`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.6.1) | — |
