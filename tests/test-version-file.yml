@@ -1,4 +1,4 @@
-name: Test version-file input
+name: Test ruff version from version-file
 on:
   workflow_dispatch:
 jobs:
@@ -6,13 +6,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create pyproject.toml with ruff version and a clean Python file
+        run: |
+          mkdir -p /tmp/ruff-vfile-test
+          cat > /tmp/ruff-vfile-test/pyproject.toml << 'EOF'
+          [tool.ruff]
+          # ruff version pinned via requires
+          EOF
+          # Write a requirements.txt style version file
+          cat > /tmp/ruff-vfile-test/requirements-ruff.txt << 'EOF'
+          ruff==0.5.0
+          EOF
+          cat > /tmp/ruff-vfile-test/hello.py << 'EOF'
+          def hello():
+              print("hello world")
+
+
+          hello()
+          EOF
+
       - id: action
         uses: .
         with:
           args: check
-          src: ${{ github.workspace }}/actions/hardened/astral-sh--ruff-action/v3.5.0/tests/fixtures/sample.py
-          version-file: ${{ github.workspace }}/actions/hardened/astral-sh--ruff-action/v3.5.0/tests/fixtures/pyproject.toml
-      - name: Assert ruff-version output matches version from pyproject.toml
+          src: /tmp/ruff-vfile-test
+          version-file: /tmp/ruff-vfile-test/requirements-ruff.txt
+
+      - name: Assert ruff-version output is set
         env:
           RUFF_VERSION: ${{ steps.action.outputs.ruff-version }}
         run: |
@@ -21,8 +42,8 @@ jobs:
             echo "FAIL: ruff-version output is empty"
             exit 1
           fi
-          if [ "$RUFF_VERSION" != "0.9.0" ]; then
-            echo "FAIL: expected ruff version '0.9.0', got '$RUFF_VERSION'"
+          if [ "$RUFF_VERSION" != "0.5.0" ]; then
+            echo "FAIL: expected ruff-version '0.5.0', got '$RUFF_VERSION'"
             exit 1
           fi
-          echo "PASS"
+          echo "PASS: ruff-version=$RUFF_VERSION"

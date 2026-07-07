@@ -1,0 +1,35 @@
+name: Test ruff format check
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create a well-formatted Python file
+        run: |
+          mkdir -p /tmp/ruff-format-test
+          cat > /tmp/ruff-format-test/formatted.py << 'EOF'
+          x = 1
+          y = 2
+          z = x + y
+          print(z)
+          EOF
+
+      - id: action
+        uses: .
+        with:
+          args: format --check
+          src: /tmp/ruff-format-test
+
+      - name: Assert ruff-version output is set
+        env:
+          RUFF_VERSION: ${{ steps.action.outputs.ruff-version }}
+        run: |
+          echo "ruff-version: $RUFF_VERSION"
+          if [ -z "$RUFF_VERSION" ]; then
+            echo "FAIL: ruff-version output is empty"
+            exit 1
+          fi
+          echo "PASS: ruff-version=$RUFF_VERSION"

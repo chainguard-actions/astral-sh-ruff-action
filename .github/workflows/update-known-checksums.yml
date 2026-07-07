@@ -1,0 +1,39 @@
+name: "Update known checksums"
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * *" # Run every day at 4am UTC
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "20"
+      - name: Update known checksums
+        id: update-known-checksums
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run:
+          node dist/update-known-checksums/index.js
+          src/download/checksum/known-checksums.ts "$GITHUB_TOKEN"
+      - run: npm install && npm run all
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+        with:
+          commit-message: "chore: update known checksums"
+          title:
+            "chore: update known checksums for ${{
+            steps.update-known-checksums.outputs.latest-version }}"
+          body:
+            "chore: update known checksums for ${{
+            steps.update-known-checksums.outputs.latest-version }}"
+          base: main
+          labels: "automated-pr,update-known-checksums"
+          branch: update-known-checksums-pr
+          delete-branch: true

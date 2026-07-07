@@ -1,4 +1,4 @@
-name: Test basic usage
+name: Test basic usage (default check)
 on:
   workflow_dispatch:
 jobs:
@@ -6,18 +6,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create a simple Python file that passes ruff check
+        run: |
+          mkdir -p /tmp/ruff-test-src
+          cat > /tmp/ruff-test-src/hello.py << 'EOF'
+          x = 1
+          print(x)
+          EOF
+
       - id: action
         uses: .
         with:
           args: check
-          src: ${{ github.workspace }}/actions/hardened/astral-sh--ruff-action/v3.5.0/tests/fixtures/sample.py
+          src: /tmp/ruff-test-src
+
       - name: Assert ruff-version output is set
         env:
-          RUFF_VERSION: ${{ steps.action.outputs.ruff-version }}
+          ACTUAL: ${{ steps.action.outputs.ruff-version }}
         run: |
-          echo "ruff-version: $RUFF_VERSION"
-          if [ -z "$RUFF_VERSION" ]; then
-            echo "FAIL: ruff-version output is empty"
+          echo "actual ruff-version: $ACTUAL"
+          if [ -z "$ACTUAL" ]; then
+            echo "FAIL: expected ruff-version to be non-empty"
             exit 1
           fi
-          echo "PASS"
+          echo "PASS: ruff-version=$ACTUAL"
