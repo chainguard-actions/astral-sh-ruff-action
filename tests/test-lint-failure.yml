@@ -1,0 +1,38 @@
+name: Test ruff detects lint errors
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create a Python file with lint errors (unused import)
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/test-bad"
+          cat > "$GITHUB_WORKSPACE/test-bad/bad.py" << 'EOF'
+          import os
+          import sys
+
+          x=1
+          print(x)
+          EOF
+
+      - id: action
+        uses: .
+        with:
+          version: "0.6.0"
+          args: "check --select=F401,E225"
+          src: "${{ github.workspace }}/test-bad"
+        continue-on-error: true
+
+      - name: Assert action failed due to lint errors
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" != "failure" ]; then
+            echo "FAIL: expected action to fail on lint errors but outcome was '$OUTCOME'"
+            exit 1
+          fi
+          echo "PASS: action correctly failed on lint errors"

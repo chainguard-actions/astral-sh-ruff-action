@@ -486,10 +486,10 @@ jobs:
           persist-credentials: false
       - name: Create test src
         env:
-          RUNNER_TEMP: ${{ runner.temp }}
+          RUNNER_TEMP_DIR: ${{ runner.temp }}
         run: |
-          mkdir -p "$RUNNER_TEMP/ruff-manifest-test"
-          printf 'print("hello")\n' > "$RUNNER_TEMP/ruff-manifest-test/hello.py"
+          mkdir -p "$RUNNER_TEMP_DIR/ruff-manifest-test"
+          printf 'print("hello")\n' > "$RUNNER_TEMP_DIR/ruff-manifest-test/hello.py"
       - name: Install from custom manifest file
         id: ruff-action
         uses: ./
@@ -539,8 +539,8 @@ jobs:
       - name: All tests passed
         env:
           ALL_PASSED: ${{ !(contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')) }}
-          HAS_FAILURE: ${{ (contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')) && '1' || '0' }}
+          ANY_FAILED: ${{ (contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')) && '1' || '0' }}
         run: |
           echo "All jobs passed: $ALL_PASSED"
           # shellcheck disable=SC2242
-          exit "$HAS_FAILURE"
+          exit "$ANY_FAILED"

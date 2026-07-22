@@ -1,4 +1,4 @@
-name: Test ruff with checksum input
+name: Test checksum input
 on:
   workflow_dispatch:
 jobs:
@@ -7,32 +7,36 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Create a clean Python file
+      - name: Create a clean Python file to lint
         run: |
-          mkdir -p /tmp/ruff-checksum-test
-          cat > /tmp/ruff-checksum-test/sample.py << 'EOF'
+          mkdir -p "$GITHUB_WORKSPACE/test-src"
+          cat > "$GITHUB_WORKSPACE/test-src/hello.py" << 'EOF'
           x = 1
           print(x)
           EOF
 
-      # Pass checksum as empty string — the action treats an absent/empty checksum
-      # as "skip verification", so the download still succeeds. This exercises the
-      # checksum input code path without requiring a hard-coded binary hash.
+      - name: Fetch checksum for ruff 0.6.0 x86_64-unknown-linux-gnu
+        id: get-checksum
+        run: |
+          SHA256=$(curl -sfL "https://github.com/astral-sh/ruff/releases/download/0.6.0/ruff-x86_64-unknown-linux-gnu.tar.gz.sha256" | awk '{print $1}')
+          echo "sha256=$SHA256" >> "$GITHUB_OUTPUT"
+          echo "Fetched checksum: $SHA256"
+
       - id: action
         uses: .
         with:
-          args: "check"
-          src: "/tmp/ruff-checksum-test"
           version: "0.6.0"
-          checksum: ""
+          checksum: ${{ steps.get-checksum.outputs.sha256 }}
+          args: "check"
+          src: "${{ github.workspace }}/test-src"
 
-      - name: Assert ruff-version output is set
+      - name: Assert ruff-version matches requested version
         env:
-          ACTUAL: ${{ steps.action.outputs.ruff-version }}
+          RUFF_VERSION: ${{ steps.action.outputs.ruff-version }}
         run: |
-          echo "actual ruff-version: $ACTUAL"
-          if [ -z "$ACTUAL" ]; then
-            echo "FAIL: expected ruff-version output to be non-empty"
+          echo "ruff-version: $RUFF_VERSION"
+          if [ "$RUFF_VERSION" != "0.6.0" ]; then
+            echo "FAIL: expected ruff-version '0.6.0' but got '$RUFF_VERSION'"
             exit 1
           fi
-          echo "PASS: ruff-version=$ACTUAL"
+          echo "PASS: ruff ran successfully with checksum validation, version=$RUFF_VERSION"

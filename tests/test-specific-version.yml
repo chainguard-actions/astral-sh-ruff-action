@@ -7,10 +7,10 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Create a clean Python file
+      - name: Create a clean Python file to lint
         run: |
-          mkdir -p /tmp/ruff-version-test
-          cat > /tmp/ruff-version-test/sample.py << 'EOF'
+          mkdir -p "$GITHUB_WORKSPACE/test-src"
+          cat > "$GITHUB_WORKSPACE/test-src/hello.py" << 'EOF'
           x = 1
           print(x)
           EOF
@@ -18,21 +18,17 @@ jobs:
       - id: action
         uses: .
         with:
-          args: "check"
-          src: "/tmp/ruff-version-test"
           version: "0.6.0"
+          args: "check"
+          src: "${{ github.workspace }}/test-src"
 
-      - name: Assert ruff-version output matches requested version
+      - name: Assert ruff-version matches requested version
         env:
-          ACTUAL: ${{ steps.action.outputs.ruff-version }}
+          RUFF_VERSION: ${{ steps.action.outputs.ruff-version }}
         run: |
-          echo "actual ruff-version: $ACTUAL"
-          if [ -z "$ACTUAL" ]; then
-            echo "FAIL: expected ruff-version output to be non-empty"
+          echo "ruff-version: $RUFF_VERSION"
+          if [ "$RUFF_VERSION" != "0.6.0" ]; then
+            echo "FAIL: expected ruff-version '0.6.0' but got '$RUFF_VERSION'"
             exit 1
           fi
-          if [ "$ACTUAL" != "0.6.0" ]; then
-            echo "FAIL: expected ruff-version to be '0.6.0', got '$ACTUAL'"
-            exit 1
-          fi
-          echo "PASS: ruff-version=$ACTUAL"
+          echo "PASS: ruff-version=$RUFF_VERSION"

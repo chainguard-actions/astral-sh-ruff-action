@@ -1,4 +1,4 @@
-name: Test manifest-file input
+name: Test basic usage - ruff check
 on:
   workflow_dispatch:
 jobs:
@@ -12,24 +12,23 @@ jobs:
           mkdir -p "$GITHUB_WORKSPACE/test-src"
           cat > "$GITHUB_WORKSPACE/test-src/hello.py" << 'EOF'
           x = 1
-          print(x)
+          y = 2
+          print(x + y)
           EOF
 
       - id: action
         uses: .
         with:
-          version: "0.6.0"
-          manifest-file: "https://raw.githubusercontent.com/astral-sh/versions/main/v1/ruff.ndjson"
           args: "check"
           src: "${{ github.workspace }}/test-src"
 
-      - name: Assert ruff-version matches requested version
+      - name: Assert ruff-version output is set
         env:
           RUFF_VERSION: ${{ steps.action.outputs.ruff-version }}
         run: |
           echo "ruff-version: $RUFF_VERSION"
-          if [ "$RUFF_VERSION" != "0.6.0" ]; then
-            echo "FAIL: expected ruff-version '0.6.0' but got '$RUFF_VERSION'"
+          if [ -z "$RUFF_VERSION" ]; then
+            echo "FAIL: ruff-version output is empty"
             exit 1
           fi
-          echo "PASS: ruff ran successfully with manifest-file input, version=$RUFF_VERSION"
+          echo "PASS: ruff-version=$RUFF_VERSION"
