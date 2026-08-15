@@ -1,4 +1,4 @@
-name: Test checksum input
+name: Test ruff with checksum validation
 on:
   workflow_dispatch:
 jobs:
@@ -6,26 +6,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create a simple Python file to lint
+        run: |
+          mkdir -p tests/fixtures/python-checksum
+          cat > tests/fixtures/python-checksum/hello.py << 'EOF'
+          x = 1
+          y = 2
+          print(x + y)
+          EOF
+
       - id: action
         uses: .
         with:
+          version: "0.7.4"
+          checksum: "0de731c669b9ece77e799ac3f4a160c30849752714d9775c94cc4cfaf326860c"
           args: "check"
-          version: "0.9.0"
-          src: "."
-          # SHA256 checksum for ruff 0.9.0 x86_64-unknown-linux-gnu.tar.gz
-          # Source: https://github.com/astral-sh/ruff/releases/download/0.9.0/ruff-0.9.0-checksums.sha256
-          checksum: "9d4d4571c7e3e2e3a3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3"
-        continue-on-error: true
-      - name: Assert checksum input was processed by the action
+          src: "tests/fixtures/python-checksum"
+
+      - name: Assert ruff-version matches requested version
         env:
-          OUTCOME: ${{ steps.action.outcome }}
+          RUFF_VERSION: ${{ steps.action.outputs.ruff-version }}
         run: |
-          echo "outcome: $OUTCOME"
-          # The action should not be skipped — it should run and either succeed
-          # (if checksum matches) or fail (checksum mismatch). Either way the
-          # 'checksum' input was accepted and processed.
-          if [ "$OUTCOME" = "skipped" ]; then
-            echo "FAIL: action was unexpectedly skipped"
+          echo "ruff-version: $RUFF_VERSION"
+          if [ "$RUFF_VERSION" != "0.7.4" ]; then
+            echo "FAIL: expected ruff-version '0.7.4' but got '$RUFF_VERSION'"
             exit 1
           fi
-          echo "PASS: checksum input was accepted by the action (outcome=$OUTCOME)"
+          echo "PASS: ruff-version is $RUFF_VERSION and checksum was validated"

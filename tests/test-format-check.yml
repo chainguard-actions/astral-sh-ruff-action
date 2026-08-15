@@ -1,4 +1,4 @@
-name: Test basic ruff check
+name: Test ruff format check
 on:
   workflow_dispatch:
 jobs:
@@ -7,10 +7,10 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Create a simple Python file to lint
+      - name: Create a well-formatted Python file
         run: |
           mkdir -p tests/fixtures/python
-          cat > tests/fixtures/python/hello.py << 'EOF'
+          cat > tests/fixtures/python/formatted.py << 'EOF'
           x = 1
           y = 2
           print(x + y)
@@ -19,7 +19,7 @@ jobs:
       - id: action
         uses: .
         with:
-          args: "check"
+          args: "format --check"
           src: "tests/fixtures/python"
 
       - name: Assert ruff-version output is set
@@ -31,4 +31,4 @@ jobs:
             echo "FAIL: ruff-version output is empty"
             exit 1
           fi
-          echo "PASS: ruff-version is $RUFF_VERSION"
+          echo "PASS: ruff ran format --check, version is $RUFF_VERSION"

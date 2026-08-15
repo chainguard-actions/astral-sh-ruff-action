@@ -7,20 +7,21 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Create a simple Python file to lint
+      - name: Create a clean Python file
         run: |
-          mkdir -p tests/fixtures/python
-          cat > tests/fixtures/python/hello.py << 'EOF'
+          mkdir -p /tmp/pyproject
+          cat > /tmp/pyproject/hello.py << 'EOF'
           x = 1
           y = 2
-          print(x + y)
+          z = x + y
+          print(z)
           EOF
 
       - id: action
         uses: .
         with:
-          args: "check"
-          src: "tests/fixtures/python"
+          args: check
+          src: /tmp/pyproject
 
       - name: Assert ruff-version output is set
         env:
@@ -31,4 +32,4 @@ jobs:
             echo "FAIL: ruff-version output is empty"
             exit 1
           fi
-          echo "PASS: ruff-version is $RUFF_VERSION"
+          echo "PASS: ruff-version=$RUFF_VERSION"

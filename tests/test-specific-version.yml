@@ -1,0 +1,33 @@
+name: Test specific version pinning
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create a clean Python file for ruff to check
+        run: |
+          mkdir -p /tmp/ruff-test-src
+          cat > /tmp/ruff-test-src/hello.py << 'EOF'
+          x = 1
+          EOF
+
+      - id: action
+        uses: .
+        with:
+          version: "0.6.0"
+          args: check
+          src: /tmp/ruff-test-src
+
+      - name: Assert ruff-version output matches requested version
+        env:
+          ACTUAL: ${{ steps.action.outputs.ruff-version }}
+        run: |
+          echo "actual ruff-version: $ACTUAL"
+          if [ "$ACTUAL" != "0.6.0" ]; then
+            echo "FAIL: expected '0.6.0', got '$ACTUAL'"
+            exit 1
+          fi
+          echo "PASS: ruff-version=$ACTUAL"

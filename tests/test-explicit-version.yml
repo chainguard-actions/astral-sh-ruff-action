@@ -1,4 +1,4 @@
-name: Test basic ruff check
+name: Test explicit ruff version
 on:
   workflow_dispatch:
 jobs:
@@ -19,16 +19,17 @@ jobs:
       - id: action
         uses: .
         with:
+          version: "0.6.0"
           args: "check"
           src: "tests/fixtures/python"
 
-      - name: Assert ruff-version output is set
+      - name: Assert ruff-version matches requested version
         env:
           RUFF_VERSION: ${{ steps.action.outputs.ruff-version }}
         run: |
           echo "ruff-version: $RUFF_VERSION"
-          if [ -z "$RUFF_VERSION" ]; then
-            echo "FAIL: ruff-version output is empty"
+          if [ "$RUFF_VERSION" != "0.6.0" ]; then
+            echo "FAIL: expected ruff-version '0.6.0' but got '$RUFF_VERSION'"
             exit 1
           fi
           echo "PASS: ruff-version is $RUFF_VERSION"

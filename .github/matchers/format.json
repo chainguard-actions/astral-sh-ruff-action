@@ -1,0 +1,14 @@
+{
+  "problemMatcher": [
+    {
+      "owner": "ruff-format",
+      "pattern": [
+        {
+          "file": 2,
+          "message": 1,
+          "regexp": "^(Would reformat):\\s*(.+)$"
+        }
+      ]
+    }
+  ]
+}

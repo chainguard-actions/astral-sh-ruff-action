@@ -1,10 +1,14 @@
 [tool.ruff]
-line-length = 88
+# Minimal pyproject.toml for testing version-file input
 
 [tool.ruff.lint]
 select = ["E", "F"]
 
+[project]
+name = "test-project"
+version = "0.1.0"
+
 [dependency-groups]
 dev = [
-    "ruff==0.9.0",
+    "ruff==0.6.0",
 ]
