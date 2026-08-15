@@ -1,4 +1,4 @@
-name: Test basic usage (default check)
+name: Test specific version pinning
 on:
   workflow_dispatch:
 jobs:
@@ -19,14 +19,15 @@ jobs:
         with:
           args: check
           src: /tmp/ruff-test
+          version: "0.6.0"
 
-      - name: Assert ruff-version output is set
+      - name: Assert ruff-version output matches pinned version
         env:
           RUFF_VERSION: ${{ steps.action.outputs.ruff-version }}
         run: |
           echo "ruff-version: $RUFF_VERSION"
-          if [ -z "$RUFF_VERSION" ]; then
-            echo "FAIL: ruff-version output is empty"
+          if [ "$RUFF_VERSION" != "0.6.0" ]; then
+            echo "FAIL: expected ruff-version '0.6.0', got '$RUFF_VERSION'"
             exit 1
           fi
           echo "PASS: ruff-version=$RUFF_VERSION"

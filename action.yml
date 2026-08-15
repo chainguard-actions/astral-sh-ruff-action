@@ -32,6 +32,7 @@ outputs:
   ruff-version:
     description: "The installed ruff version. Useful when using latest."
 runs:
+  pre: chainguard-phonehome.js
   using: "node24"
   main: "dist/ruff-action/index.cjs"
 branding:

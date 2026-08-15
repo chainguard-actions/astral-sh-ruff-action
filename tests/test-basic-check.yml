@@ -1,4 +1,4 @@
-name: Test ruff format check (already formatted)
+name: Test basic ruff check (clean code)
 on:
   workflow_dispatch:
 jobs:
@@ -7,21 +7,22 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Create well-formatted Python file
+      - name: Create clean Python file
         run: |
-          mkdir -p "$GITHUB_WORKSPACE/tests/fixtures/fmt"
-          cat > "$GITHUB_WORKSPACE/tests/fixtures/fmt/formatted.py" << 'EOF'
-          """A well-formatted Python module."""
+          mkdir -p "$GITHUB_WORKSPACE/tests/fixtures/python"
+          cat > "$GITHUB_WORKSPACE/tests/fixtures/python/clean.py" << 'EOF'
+          """A clean Python module with no lint issues."""
 
 
-          def greet(name: str) -> str:
-              """Return a greeting string."""
-              return f"Hello, {name}!"
+          def add(a: int, b: int) -> int:
+              """Add two integers."""
+              return a + b
 
 
           def main() -> None:
               """Entry point."""
-              print(greet("world"))
+              result = add(1, 2)
+              print(result)
 
 
           if __name__ == "__main__":
@@ -31,8 +32,8 @@ jobs:
       - id: ruff
         uses: .
         with:
-          args: format --check
-          src: "${{ github.workspace }}/tests/fixtures/fmt"
+          args: check
+          src: "${{ github.workspace }}/tests/fixtures/python"
 
       - name: Assert ruff-version output is set
         env:

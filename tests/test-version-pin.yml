@@ -1,0 +1,42 @@
+name: Test ruff with pinned version
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create minimal Python file
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/tests/fixtures/versioned"
+          cat > "$GITHUB_WORKSPACE/tests/fixtures/versioned/hello.py" << 'EOF'
+          """Minimal Python module."""
+
+
+          def hello() -> str:
+              """Return hello."""
+              return "hello"
+          EOF
+
+      - id: ruff
+        uses: .
+        with:
+          version: "0.9.0"
+          args: check
+          src: "${{ github.workspace }}/tests/fixtures/versioned"
+
+      - name: Assert ruff-version matches pinned version
+        env:
+          RUFF_VERSION: ${{ steps.ruff.outputs.ruff-version }}
+        run: |
+          echo "ruff-version: $RUFF_VERSION"
+          if [ -z "$RUFF_VERSION" ]; then
+            echo "FAIL: ruff-version output is empty"
+            exit 1
+          fi
+          if [ "$RUFF_VERSION" != "0.9.0" ]; then
+            echo "FAIL: expected ruff-version '0.9.0' but got '$RUFF_VERSION'"
+            exit 1
+          fi
+          echo "PASS: ruff-version=$RUFF_VERSION"
