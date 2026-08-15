@@ -1,4 +1,4 @@
-name: Test basic usage - ruff check
+name: Test basic ruff check
 on:
   workflow_dispatch:
 jobs:
@@ -7,23 +7,19 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Create a simple Python file to lint
+      - name: Create a clean Python file
         run: |
-          mkdir -p /tmp/pyproject
-          cat > /tmp/pyproject/hello.py << 'EOF'
+          cat > /tmp/clean.py << 'EOF'
           x = 1
           y = 2
-          print(x + y)
-          EOF
-          cat > /tmp/pyproject/pyproject.toml << 'EOF'
-          [tool.ruff]
+          z = x + y
           EOF
 
       - id: action
         uses: .
         with:
           args: check
-          src: /tmp/pyproject
+          src: /tmp/clean.py
 
       - name: Assert ruff-version output is set
         env:
@@ -31,12 +27,7 @@ jobs:
         run: |
           echo "ruff-version: $RUFF_VERSION"
           if [ -z "$RUFF_VERSION" ]; then
-            echo "FAIL: ruff-version output is empty"
+            echo "FAIL: expected ruff-version output to be non-empty"
             exit 1
           fi
           echo "PASS: ruff-version=$RUFF_VERSION"
-
-      - name: Assert ruff is on PATH
-        run: |
-          which ruff || (echo "FAIL: ruff not found on PATH" && exit 1)
-          echo "PASS: ruff found at $(which ruff)"

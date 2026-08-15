@@ -1,4 +1,4 @@
-name: Test basic usage - ruff check
+name: Test ruff format check
 on:
   workflow_dispatch:
 jobs:
@@ -7,22 +7,19 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Create a simple Python file to lint
+      - name: Create a well-formatted Python file
         run: |
           mkdir -p /tmp/pyproject
-          cat > /tmp/pyproject/hello.py << 'EOF'
+          cat > /tmp/pyproject/well_formatted.py << 'EOF'
           x = 1
           y = 2
           print(x + y)
-          EOF
-          cat > /tmp/pyproject/pyproject.toml << 'EOF'
-          [tool.ruff]
           EOF
 
       - id: action
         uses: .
         with:
-          args: check
+          args: format --check
           src: /tmp/pyproject
 
       - name: Assert ruff-version output is set
@@ -35,8 +32,3 @@ jobs:
             exit 1
           fi
           echo "PASS: ruff-version=$RUFF_VERSION"
-
-      - name: Assert ruff is on PATH
-        run: |
-          which ruff || (echo "FAIL: ruff not found on PATH" && exit 1)
-          echo "PASS: ruff found at $(which ruff)"

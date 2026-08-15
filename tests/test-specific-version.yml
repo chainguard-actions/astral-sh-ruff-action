@@ -1,4 +1,4 @@
-name: Test basic usage - ruff check
+name: Test specific ruff version
 on:
   workflow_dispatch:
 jobs:
@@ -12,20 +12,17 @@ jobs:
           mkdir -p /tmp/pyproject
           cat > /tmp/pyproject/hello.py << 'EOF'
           x = 1
-          y = 2
-          print(x + y)
-          EOF
-          cat > /tmp/pyproject/pyproject.toml << 'EOF'
-          [tool.ruff]
+          print(x)
           EOF
 
       - id: action
         uses: .
         with:
+          version: "0.6.0"
           args: check
           src: /tmp/pyproject
 
-      - name: Assert ruff-version output is set
+      - name: Assert ruff-version output matches requested version
         env:
           RUFF_VERSION: ${{ steps.action.outputs.ruff-version }}
         run: |
@@ -34,9 +31,18 @@ jobs:
             echo "FAIL: ruff-version output is empty"
             exit 1
           fi
+          if [ "$RUFF_VERSION" != "0.6.0" ]; then
+            echo "FAIL: expected version 0.6.0 but got $RUFF_VERSION"
+            exit 1
+          fi
           echo "PASS: ruff-version=$RUFF_VERSION"
 
-      - name: Assert ruff is on PATH
+      - name: Assert ruff binary reports correct version
         run: |
-          which ruff || (echo "FAIL: ruff not found on PATH" && exit 1)
-          echo "PASS: ruff found at $(which ruff)"
+          INSTALLED="$(ruff --version 2>&1 | awk '{print $2}')"
+          echo "ruff --version reports: $INSTALLED"
+          if [ "$INSTALLED" != "0.6.0" ]; then
+            echo "FAIL: expected ruff 0.6.0 but got $INSTALLED"
+            exit 1
+          fi
+          echo "PASS"
