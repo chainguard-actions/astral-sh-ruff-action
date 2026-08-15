@@ -1,4 +1,4 @@
-name: Test basic usage - ruff check on clean code
+name: Test latest version - no version specified
 on:
   workflow_dispatch:
 jobs:
@@ -11,27 +11,26 @@ jobs:
         uses: .
         with:
           args: check
-          src: ${{ github.workspace }}/tests/fixtures/clean
-          version: "0.9.0"
+          src: ${{ github.workspace }}/tests/fixtures/latest
 
-      - name: Assert ruff-version output is set
+      - name: Assert ruff-version output is non-empty
         env:
           RUFF_VERSION: ${{ steps.action.outputs.ruff-version }}
         run: |
           echo "ruff-version: $RUFF_VERSION"
           if [ -z "$RUFF_VERSION" ]; then
-            echo "FAIL: ruff-version output is empty"
+            echo "FAIL: ruff-version output is empty when using latest"
             exit 1
           fi
           echo "PASS: ruff-version is set to $RUFF_VERSION"
 
-      - name: Assert ruff-version matches requested version
+      - name: Assert ruff-version looks like a semver
         env:
           RUFF_VERSION: ${{ steps.action.outputs.ruff-version }}
         run: |
           echo "ruff-version: $RUFF_VERSION"
-          if [ "$RUFF_VERSION" != "0.9.0" ]; then
-            echo "FAIL: expected ruff-version '0.9.0', got '$RUFF_VERSION'"
+          if ! echo "$RUFF_VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+'; then
+            echo "FAIL: ruff-version '$RUFF_VERSION' does not look like a semver"
             exit 1
           fi
-          echo "PASS: ruff-version matches requested version"
+          echo "PASS: ruff-version looks like a valid semver"

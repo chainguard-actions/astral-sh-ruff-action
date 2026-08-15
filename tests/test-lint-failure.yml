@@ -1,0 +1,39 @@
+name: Test lint failure - ruff check exits non-zero on bad code
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run ruff on bad code and expect failure
+        id: ruff-bad
+        uses: .
+        with:
+          args: check
+          src: ${{ github.workspace }}/tests/fixtures/bad
+          version: "0.9.0"
+        continue-on-error: true
+
+      - name: Assert ruff-version output is set even on failure
+        env:
+          RUFF_VERSION: ${{ steps.ruff-bad.outputs.ruff-version }}
+        run: |
+          echo "ruff-version: $RUFF_VERSION"
+          if [ -z "$RUFF_VERSION" ]; then
+            echo "FAIL: ruff-version output is empty"
+            exit 1
+          fi
+          echo "PASS: ruff-version is set to $RUFF_VERSION"
+
+      - name: Assert ruff step failed (exit non-zero on violations)
+        env:
+          OUTCOME: ${{ steps.ruff-bad.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" != "failure" ]; then
+            echo "FAIL: expected ruff to fail on bad code, but outcome was '$OUTCOME'"
+            exit 1
+          fi
+          echo "PASS: ruff correctly exited non-zero on code with violations"

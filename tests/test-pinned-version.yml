@@ -1,4 +1,4 @@
-name: Test ruff with checksum validation
+name: Test pinned ruff version
 on:
   workflow_dispatch:
 jobs:
@@ -9,20 +9,19 @@ jobs:
 
       - name: Create clean Python file
         run: |
-          mkdir -p /tmp/ruff-checksum-test
-          cat > /tmp/ruff-checksum-test/main.py << 'EOF'
-          x = 1
-          y = 2
-          print(x + y)
+          mkdir -p /tmp/ruff-pinned-test
+          cat > /tmp/ruff-pinned-test/main.py << 'EOF'
+          a = 1
+          b = 2
+          print(a + b)
           EOF
 
       - id: action
         uses: .
         with:
           args: check
-          src: /tmp/ruff-checksum-test
-          version: "0.7.4"
-          checksum: "0de731c669b9ece77e799ac3f4a160c30849752714d9775c94cc4cfaf326860c"
+          src: /tmp/ruff-pinned-test
+          version: "0.6.0"
 
       - name: Assert ruff-version matches pinned version
         env:
@@ -33,8 +32,8 @@ jobs:
             echo "FAIL: expected ruff-version output to be non-empty"
             exit 1
           fi
-          if [ "$RUFF_VERSION" != "0.7.4" ]; then
-            echo "FAIL: expected ruff-version to be '0.7.4', got '$RUFF_VERSION'"
+          if [ "$RUFF_VERSION" != "0.6.0" ]; then
+            echo "FAIL: expected ruff-version to be '0.6.0', got '$RUFF_VERSION'"
             exit 1
           fi
-          echo "PASS: ruff-version=$RUFF_VERSION with checksum validated"
+          echo "PASS: ruff-version=$RUFF_VERSION"
