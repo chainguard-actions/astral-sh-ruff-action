@@ -8,13 +8,15 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 
 | Version | Tag | Upstream commit |
 |---------|-----|-----------------|
-| v3 | [`v3`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3) | [`0c50076`](https://github.com/astral-sh/ruff-action/commit/0c50076f12c38c3d0115b7b519b54a91cb9cf0ad) |
-| v3.5 | [`v3.5`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.5) | [`0c50076`](https://github.com/astral-sh/ruff-action/commit/0c50076f12c38c3d0115b7b519b54a91cb9cf0ad) |
+| v3 | [`v3`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3) | [`4919ec5`](https://github.com/astral-sh/ruff-action/commit/4919ec5cf1f49eff0871dbcea0da843445b837e6) |
+| v3.5 | [`v3.5`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.5) | [`57714a7`](https://github.com/astral-sh/ruff-action/commit/57714a7c8a2e59f32539362ba31877a1957dded1) |
 | v3.5.0 | [`v3.5.0`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.5.0) | [`0c50076`](https://github.com/astral-sh/ruff-action/commit/0c50076f12c38c3d0115b7b519b54a91cb9cf0ad) |
 | v3.5.1 | [`v3.5.1`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.5.1) | [`57714a7`](https://github.com/astral-sh/ruff-action/commit/57714a7c8a2e59f32539362ba31877a1957dded1) |
+| v3.6 | [`v3.6`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.6) | [`4919ec5`](https://github.com/astral-sh/ruff-action/commit/4919ec5cf1f49eff0871dbcea0da843445b837e6) |
 | v3.6.0 | [`v3.6.0`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.6.0) | [`aedff8d`](https://github.com/astral-sh/ruff-action/commit/aedff8d295e5eafdfcc21db7dfdce8cab2c55e7b) |
 | v3.6.1 | [`v3.6.1`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.6.1) | [`4919ec5`](https://github.com/astral-sh/ruff-action/commit/4919ec5cf1f49eff0871dbcea0da843445b837e6) |
-| v4 | [`v4`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v4) | [`278981a`](https://github.com/astral-sh/ruff-action/commit/278981a28ce3188b1e39527901f38254bf3aac89) |
+| v4 | [`v4`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v4) | [`0ce1b0b`](https://github.com/astral-sh/ruff-action/commit/0ce1b0bf8b818ef400413f810f8a11cdbda0034b) |
+| v4.0 | [`v4.0`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v4.0) | [`0ce1b0b`](https://github.com/astral-sh/ruff-action/commit/0ce1b0bf8b818ef400413f810f8a11cdbda0034b) |
 | v4.0.0 | [`v4.0.0`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v4.0.0) | [`0ce1b0b`](https://github.com/astral-sh/ruff-action/commit/0ce1b0bf8b818ef400413f810f8a11cdbda0034b) |
 | v4.1 | [`v4.1`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v4.1) | [`278981a`](https://github.com/astral-sh/ruff-action/commit/278981a28ce3188b1e39527901f38254bf3aac89) |
 | v4.1.0 | [`v4.1.0`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v4.1.0) | [`278981a`](https://github.com/astral-sh/ruff-action/commit/278981a28ce3188b1e39527901f38254bf3aac89) |
