@@ -1,4 +1,4 @@
-name: Test ruff format check mode
+name: Test specific ruff version
 on:
   workflow_dispatch:
 jobs:
@@ -6,10 +6,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Create a well-formatted Python file
+      - name: Create a simple Python file to lint
         run: |
           mkdir -p tests/fixtures/python
-          cat > tests/fixtures/python/formatted.py << 'EOF'
+          cat > tests/fixtures/python/hello.py << 'EOF'
           x = 1
           y = 2
           print(x + y)
@@ -17,9 +17,10 @@ jobs:
       - id: action
         uses: .
         with:
-          args: format --check
+          version: "0.6.0"
+          args: check
           src: tests/fixtures/python
-      - name: Assert ruff-version output is set
+      - name: Assert ruff-version matches requested version
         env:
           RUFF_VERSION: ${{ steps.action.outputs.ruff-version }}
         run: |
@@ -28,4 +29,8 @@ jobs:
             echo "FAIL: ruff-version output is empty"
             exit 1
           fi
-          echo "PASS: ruff ran format --check, version is '$RUFF_VERSION'"
+          if [ "$RUFF_VERSION" != "0.6.0" ]; then
+            echo "FAIL: expected version '0.6.0' but got '$RUFF_VERSION'"
+            exit 1
+          fi
+          echo "PASS: ruff-version is '$RUFF_VERSION'"

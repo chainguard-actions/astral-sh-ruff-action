@@ -17,7 +17,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Actionlint
         uses: eifinger/actionlint-action@23c85443d840cd73bbecb9cddfc933cc21649a38  # v1.9.1
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -41,7 +41,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, macos-14, windows-latest]
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Use latest version
         uses: ./
         with:
@@ -54,7 +54,7 @@ jobs:
         ruff-version: ["0.1.7", "0.1.8", "0.4.7", "0.4.10", "0.7", "0.7.x", ">=0.7.0"]
         os: [ ubuntu-latest, ubuntu-24.04-arm, macos-latest, macos-14, windows-latest ]
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Use version ${{ matrix.ruff-version }}
         uses: ./
         with:
@@ -63,7 +63,7 @@ jobs:
   test-unsupported-version:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Try install old version
         id: install
         continue-on-error: true
@@ -81,7 +81,7 @@ jobs:
   test-version-from-version-file-pyproject:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Use version from pyproject.toml
         id: ruff-action
         uses: ./
@@ -98,7 +98,7 @@ jobs:
   test-default-version-from-pyproject:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Use default version from pyproject.toml
         id: ruff-action
         uses: ./
@@ -114,7 +114,7 @@ jobs:
   test-default-version-from-pyproject-dev-group:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Use default version from pyproject.toml dev group
         id: ruff-action
         uses: ./
@@ -131,7 +131,7 @@ jobs:
   test-default-version-from-pyproject-dependency-groups:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Use default version from pyproject.toml dependency groups
         id: ruff-action
         uses: ./
@@ -148,7 +148,7 @@ jobs:
   test-default-version-from-pyproject-poetry-groups:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Use default version from pyproject.toml poetry group dependencies
         id: ruff-action
         uses: ./
@@ -165,7 +165,7 @@ jobs:
   test-default-version-from-pyproject-poetry:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Use default version from pyproject.toml poetry dependencies
         id: ruff-action
         uses: ./
@@ -182,7 +182,7 @@ jobs:
   test-default-version-from-pyproject-optional-dependencies:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Use default version from pyproject.toml optional dependencies
         id: ruff-action
         uses: ./
@@ -199,7 +199,7 @@ jobs:
   test-default-version-from-requirements:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Use default version from requirements.txt
         id: ruff-action
         uses: ./
@@ -216,7 +216,7 @@ jobs:
   test-semver-range:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Use version 0.7
         id: ruff-action
         uses: ./
@@ -233,7 +233,7 @@ jobs:
   test-pep440-version-specifier:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Install version 0.9.10
         id: ruff-action
         uses: ./
@@ -257,7 +257,7 @@ jobs:
           - os: macos-latest
             checksum: "af9583bff12afbca5d5670334e0187dd60c4d91bc71317d1b2dde70cb1200ba9"
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Checksum matches expected
         uses: ./
         with:
@@ -267,7 +267,7 @@ jobs:
   test-with-explicit-token:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Use default version
         uses: ./
         with:
@@ -279,7 +279,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Use args
         uses: ./
         with:
@@ -288,7 +288,7 @@ jobs:
   test-failure:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Format should fail
         id: format-should-fail
         continue-on-error: true
@@ -322,7 +322,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest, windows-latest ]
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Use args
         uses: ./
         with:
@@ -358,9 +358,8 @@ jobs:
       - name: All tests passed
         env:
           ALL_PASSED: ${{ !contains(needs.*.result, 'failure') }}
-          HAS_FAILURE: ${{ contains(needs.*.result, 'failure') }}
+          HAS_FAILURE: ${{ contains(needs.*.result, 'failure') && 1 || 0 }}
         run: |
           echo "All jobs passed: $ALL_PASSED"
-          if [ "$HAS_FAILURE" = "true" ]; then
-            exit 1
-          fi
+          # shellcheck disable=SC2242
+          exit "$HAS_FAILURE"
