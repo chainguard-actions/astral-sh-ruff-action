@@ -8,8 +8,8 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 
 | Version | Tag | Upstream commit |
 |---------|-----|-----------------|
-| v3 | [`v3`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3) | [`4919ec5`](https://github.com/astral-sh/ruff-action/commit/4919ec5cf1f49eff0871dbcea0da843445b837e6) |
-| v3.5 | [`v3.5`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.5) | [`57714a7`](https://github.com/astral-sh/ruff-action/commit/57714a7c8a2e59f32539362ba31877a1957dded1) |
+| v3 | [`v3`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3) | [`0c50076`](https://github.com/astral-sh/ruff-action/commit/0c50076f12c38c3d0115b7b519b54a91cb9cf0ad) |
+| v3.5 | [`v3.5`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.5) | [`0c50076`](https://github.com/astral-sh/ruff-action/commit/0c50076f12c38c3d0115b7b519b54a91cb9cf0ad) |
 | v3.5.0 | [`v3.5.0`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.5.0) | [`0c50076`](https://github.com/astral-sh/ruff-action/commit/0c50076f12c38c3d0115b7b519b54a91cb9cf0ad) |
 | v3.5.1 | [`v3.5.1`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.5.1) | [`57714a7`](https://github.com/astral-sh/ruff-action/commit/57714a7c8a2e59f32539362ba31877a1957dded1) |
 | v3.6 | [`v3.6`](https://github.com/chainguard-actions/astral-sh-ruff-action/tree/v3.6) | [`4919ec5`](https://github.com/astral-sh/ruff-action/commit/4919ec5cf1f49eff0871dbcea0da843445b837e6) |
