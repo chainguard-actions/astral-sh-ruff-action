@@ -4,8 +4,13 @@
   "version": "v4.0.0",
   "commit_sha": "0ce1b0bf8b818ef400413f810f8a11cdbda0034b",
   "url": "https://github.com/astral-sh/ruff-action",
-  "policy_sha": "d636be7e43ef829af6e853da6b3c7566db9f72fe",
+  "policy_sha": "374911c4be584df24e6da57af2d990570ef0f859",
   "test_policy_sha": "843adf9e4b8f85d0c08b27b9d0b09dd094b54702",
   "test_agent_version": "2",
-  "harden_agent_version": "2"
+  "harden_agent_version": "2",
+  "dist_artifact": {
+    "gcs_uri": "gs://patch-actions-node-artifacts/dist-artifacts/astral-sh/ruff-action/v4.0.0/sha256-2a0952539f294fab2d70b9487ecb1cd38430b9dafa3c0b7a32ab0ab756e186b7.tar.gz",
+    "sha256": "2a0952539f294fab2d70b9487ecb1cd38430b9dafa3c0b7a32ab0ab756e186b7",
+    "size_bytes": 704970
+  }
 }
